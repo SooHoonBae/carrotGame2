@@ -3,7 +3,7 @@
 }
 .game {
   background: url(img/background.png) center/cover;
-  width: 700px;
+  width: 800px;
   height: 500px;
   border-radius: 20px;
   margin: auto;
@@ -70,8 +70,7 @@ button:hover {
 .pop-up--hide {
   display: none;
 }
-.pop-up__refresh {
-}
+
 .pop-up__message {
   font-size: 50px;
   color: white;
