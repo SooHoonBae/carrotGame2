@@ -104,3 +104,34 @@ function addItem(className,count,imgPath){
 function randomNumber(min,max){
     return Math.random()*(max-min)+min;
 }
+
+field.addEventListener('click',onFieldClick)
+function onFieldClick(event) {
+    if(!started) {
+        return;
+    }
+    const target=event.target;
+    if(target.matches('.carrot')){
+        event.target.remove();
+        score++;
+        updateScoreBoard();
+        if(score===CARROT_COUNT){
+            finishGame(true);
+        }
+    }else if(target.matches('.bug')){
+        stopGameTimer();
+        finishGame(false);
+    }
+
+}
+function finishGame(win) {
+    
+}
+function updateScoreBoard() {
+    gameScore.innerText= CARROT_COUNT-score;
+}
+
+function removeCarrot() {
+    console.log(carrot);
+    field.removeChild(carrot);
+}
