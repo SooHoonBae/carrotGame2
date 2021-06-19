@@ -160,10 +160,6 @@ function updateScoreBoard() {
     gameScore.innerText= CARROT_COUNT-score;
 }
 
-function removeCarrot() {
-    console.log(carrot);
-    field.removeChild(carrot);
-}
 function playSound(sound) {
     sound.currentTime=0;
     sound.play();
