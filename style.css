@@ -1,6 +1,9 @@
 * {
   box-sizing: border-box;
 }
+body {
+  background-color: black;
+}
 .game {
   background: url(img/background.png) center/cover;
   width: 800px;
@@ -43,6 +46,8 @@ button:hover {
   font-size: 32px;
   text-align: center;
   visibility: hidden;
+  cursor: auto;
+  user-select: none;
 }
 .game__score {
   background-color: tomato;
@@ -56,6 +61,8 @@ button:hover {
   align-items: center;
   font-size: 32px;
   visibility: hidden;
+  cursor: auto;
+  user-select: none;
 }
 .pop-up {
   width: 400px;
@@ -76,4 +83,13 @@ button:hover {
 .pop-up__message {
   font-size: 50px;
   color: white;
+}
+.carrot,
+.bug {
+  transition: transform 100ms ease-in;
+}
+.carrot:hover,
+.bug:hover {
+  transform: scale(1.1);
+  cursor: pointer;
 }
