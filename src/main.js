@@ -1,14 +1,13 @@
 'use strict'
 
 import PopUp from './popup.js';
+import Field from './field.js';
 
-const CARROT_SIZE= 80;
 const CARROT_COUNT=10;
 const BUG_COUNT=7;
 const GAME_DURATION_SEC=10;
 
-const field = document.querySelector('.game__field');
-const fieldRect = field.getBoundingClientRect();
+
 const gameBtn=document.querySelector('.game__button');
 const gameTimer=document.querySelector('.game__timer');
 const gameScore=document.querySelector('.game__score');
@@ -25,6 +24,25 @@ let score = 0;
 let timer = undefined;
 
 const gameFinishBanner = new PopUp();
+const gameField = new Field(CARROT_COUNT,BUG_COUNT);
+
+gameField.setClickListener(onItemClick)
+
+function onItemClick(item) {
+    if(!started) {
+        return;
+    }
+    if(item==='carrot'){
+        score++;
+        updateScoreBoard();
+        if(score===CARROT_COUNT){
+            finishGame(true);
+        };
+    }else if(item==='bug'){
+        finishGame(false);
+    };
+};
+
 gameBtn.addEventListener('click',()=>{
     if(started) {
         stopGame();
@@ -89,53 +107,12 @@ function stopGameTimer() {
 
 
 function initGame(){
-    field.innerHTML='';
     score=0;
     gameScore.innerText=CARROT_COUNT;
-    addItem('carrot',CARROT_COUNT,'img/carrot.png');
-    addItem('bug',BUG_COUNT,'img/bug.png');
+    gameField.init();
 };
 
-function addItem(className,count,imgPath){
-    const minX=0;
-    const minY=0;
-    const maxX=fieldRect.width-CARROT_SIZE;
-    const maxY=fieldRect.height-CARROT_SIZE;
 
-    for(let i=0;i<count;i++){
-        const item= document.createElement('img');
-        item.setAttribute('class',className);
-        item.setAttribute('src',imgPath);
-        const x = randomNumber(minX,maxX);
-        const y = randomNumber(minY,maxY);
-        item.style.position='absolute';
-        item.style.left=`${x}px`;
-        item.style.top=`${y}px`;
-        field.appendChild(item);
-    }
-}
-function randomNumber(min,max){
-    return Math.random()*(max-min)+min;
-}
-
-field.addEventListener('click',onFieldClick)
-function onFieldClick(event) {
-    if(!started) {
-        return;
-    }
-    const target=event.target;
-    if(target.matches('.carrot')){
-        target.remove();
-        score++;
-        updateScoreBoard();
-        playSound(carrotSound);
-        if(score===CARROT_COUNT){
-            finishGame(true);
-        };
-    }else if(target.matches('.bug')){
-        finishGame(false);
-    };
-};
 function finishGame(win) {
     started=false;
     stopGameTimer();
