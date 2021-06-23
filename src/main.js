@@ -1,115 +1,30 @@
 'use strict'
 
 import PopUp from './popup.js';
-import Field from './field.js';
-import * as sound from './sound.js';
-import Button from './game.js';
-
-const CARROT_COUNT=10;
-const BUG_COUNT=7;
-const GAME_DURATION_SEC=10;
-
-const gameTimer=document.querySelector('.game__timer');
-const gameScore=document.querySelector('.game__score');
-
-let started = false;
-let score = 0;
-let timer = undefined;
+import Game from './game.js';
 
 const gameFinishBanner = new PopUp();
-const gameField = new Field(CARROT_COUNT,BUG_COUNT);
-const gameButton = new Button();
+const game = new Game(10,7,3);
 
-gameField.setClickListener(onItemClick)
-
-function onItemClick(item) {
-    if(!started) {
-        return;
-    }
-    if(item ==='carrot'){
-        score++;
-        updateScoreBoard();
-        if(score === CARROT_COUNT){
-            finishGame(true);
-        };
-    }else if(item ==='bug'){
-        finishGame(false);
-    };
-};
-
-gameButton.setClickListener(()=>{
-    if(started) {
-        stopGame();
-    }else{
-        startGame();
-    }
-})
+game.setGameStopListener((reason)=>{
+    console.log(reason);
+    let message;
+    switch(reason) {
+        case 'cancel':
+            message = 'Replay??';
+            break;
+        case 'win' :
+            message = 'YOU WON!!';
+            break;
+        case 'lose' :
+            message = 'YOU LOST~~';
+            break;
+        default :
+            throw new Error('not valid reason');
+        }
+        gameFinishBanner.showWithText(message);
+    });
 
 gameFinishBanner.setClickListener(()=>{
-    startGame()
+    game.start();
 })
-function startGame() {
-    started=true;
-    initGame();    
-    gameButton.showStop();
-    showTimerandScore();
-    startGameTimer();
-    sound.playBackground();
-}
-
-function stopGame() {
-    started=false;
-    stopGameTimer();
-    gameButton.hide();
-    gameFinishBanner.showWithText('replay?');
-    sound.stopBackground();
-    sound.playAlert();
-}
-
-function showTimerandScore() {
-    gameTimer.style.visibility='visible';
-    gameScore.style.visibility='visible';
-}
-function startGameTimer() {
-    let timeleft=GAME_DURATION_SEC;
-    updateTimerText(timeleft);
-    timer=setInterval(()=> {
-        if(timeleft<=0){
-            finishGame(score===CARROT_COUNT);
-            clearInterval(timer);
-            return;
-        }else{
-            updateTimerText(--timeleft);
-        }
-    }, 1000);    
-};
-function updateTimerText(time) {
-    let minute = Math.floor(time/60);
-    let second = time%60;
-    gameTimer.innerText=`${minute}:${second}`;
-}
-function stopGameTimer() {
-    clearInterval(timer);
-}
-
-function initGame(){
-    score=0;
-    gameScore.innerText=CARROT_COUNT;
-    gameField.init();
-};
-
-function finishGame(win) {
-    started=false;
-    stopGameTimer();
-    gameButton.hide();
-    if (win){
-        sound.playWin();
-    }else{
-        sound.playBug();
-    }
-    sound.stopBackground();
-    gameFinishBanner.showWithText(win? 'You win❤' : 'You Lost💥');
-}
-function updateScoreBoard() {
-    gameScore.innerText= CARROT_COUNT-score;
-}
